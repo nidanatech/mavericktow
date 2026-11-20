@@ -2,28 +2,41 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 const motion = gsap.matchMedia();
-const truckImage = document.querySelector('.truck img');
-truckImage.decode().catch(() => {}).then(() => {
-motion.add('(prefers-reduced-motion: no-preference)', () => {
-  const arrival = gsap.timeline();
-  arrival.fromTo('.truck', {xPercent:-140, opacity:0}, {xPercent:0, opacity:1, duration:2.2, ease:'power3.out'})
-    .fromTo('.hero-copy', {y:35, opacity:0}, {y:0, opacity:1, duration:1}, 0.3);
-  const drive = gsap.timeline({scrollTrigger:{
-    trigger:'.hero', start:'top top', end:() => '+=' + window.innerHeight * 1.4,
-    pin:true, scrub:0.7, invalidateOnRefresh:true
-  }});
-  drive.to('.truck img', {rotation:-9, yPercent:-10, scale:1.06, transformOrigin:'20% 82%', ease:'none'},0)
-    .to('.sun', {y:100, scale:1.2, ease:'none'},0)
-    .to('.road', {backgroundPosition:'-600px 0',ease:'none'},0)
-    .to('.hero-copy', {y:-35,opacity:0.7,ease:'none'},0)
-    .to('.scroll-progress', {scaleX:1,ease:'none'},0);
-  document.querySelector('.replay').addEventListener('click', () => arrival.restart());
-  gsap.utils.toArray('.services article, .section-heading, .photo-section>div').forEach(element => {
-    gsap.from(element, {y:45,opacity:0,duration:0.8,scrollTrigger:{trigger:element,start:'top 90%',once:true}});
+const truckImages = [...document.querySelectorAll('.truck img')];
+Promise.all(truckImages.map(image => image.decode().catch(() => {}))).then(() => {
+  motion.add('(prefers-reduced-motion: no-preference)', () => {
+    const arrival = gsap.timeline();
+    arrival.fromTo('.truck', {xPercent:-150, opacity:0}, {
+      xPercent:0, opacity:1, duration:2.4, ease:'power2.out'
+    }, 0);
+    arrival.fromTo('.wheel .sprite', {rotation:-540}, {
+      rotation:0, duration:2.4, ease:'power2.out'
+    }, 0);
+    arrival.fromTo('.hero-copy', {y:25, opacity:0}, {
+      y:0, opacity:1, duration:0.8
+    }, 0.2);
+    arrival.to('.rig-body', {y:3, duration:0.12, yoyo:true, repeat:3}, 2.1);
+
+    const drive = gsap.timeline({scrollTrigger:{
+      trigger:'.hero', start:'top top',
+      end:() => '+=' + window.innerHeight,
+      pin:true, scrub:0.6, invalidateOnRefresh:true
+    }});
+    drive.fromTo('.rig-boom', {rotation:12}, {
+      rotation:-14, ease:'none', duration:1
+    }, 0);
+    drive.to('.scroll-progress', {scaleX:1, ease:'none', duration:1}, 0);
+
+    const replay = () => arrival.restart();
+    const replayButton = document.querySelector('.replay');
+    replayButton.addEventListener('click', replay);
+    gsap.utils.toArray('.services article, .section-heading, .photo-section>div').forEach(element => {
+      gsap.from(element, {y:35,opacity:0,duration:0.8,
+        scrollTrigger:{trigger:element,start:'top 90%',once:true}});
+    });
+    return () => replayButton.removeEventListener('click', replay);
   });
-  return () => arrival.kill();
-});
-ScrollTrigger.refresh();
+  ScrollTrigger.refresh();
 });
 document.querySelector('#year').textContent = new Date().getFullYear();
 document.querySelector('#partnership').addEventListener('submit', event => {
