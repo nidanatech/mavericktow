@@ -43,3 +43,18 @@
 .wheel-rear{width:19.53%;left:70.31%;top:50.71%}
 .road{bottom:5%}
 .truck-scene .road{bottom:-36px}
+/* Original supplied MR artwork, presented against the dark brand surface. */
+.brand-mark{display:block;width:48px;height:48px;overflow:hidden;flex-shrink:0;mix-blend-mode:screen}
+.brand-mark img{display:block;width:80px;height:80px;max-width:none;transform:translate(-16px,-14px)}
+.hero{isolation:isolate;background:#171a19}
+.hero:before{display:none}
+.hero-atmosphere{position:absolute;inset:-4%;z-index:-2;pointer-events:none;transform-origin:75% 60%}
+.sky-image{width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.65) brightness(.78)}
+.hero:after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(15,19,18,.87),rgba(15,19,18,.65) 36%,rgba(15,19,18,.08) 75%),linear-gradient(0deg,#141613 0%,rgba(20,22,19,.65) 13%,transparent 55%)}
+.sun-haze{position:absolute;width:28%;aspect-ratio:1;left:66%;top:43%;border-radius:50%;background:radial-gradient(ellipse,#ffd49965,rgba(249,172,78,.12) 35%,transparent 68%);mix-blend-mode:screen;opacity:.16;pointer-events:none}
+.hero .eyebrow{color:#e8ded0}
+.hero-bottom,.replay{z-index:5}
+@media(max-width:600px){.brand-mark{width:34px;height:34px}.brand-mark img{width:57px;height:57px;transform:translate(-11px,-10px)}header .brand{gap:8px;font-size:16px}header .brand small{font-size:6px}.sky-image{object-position:65% center}.hero:after{background:linear-gradient(180deg,rgba(15,19,18,.68),rgba(15,19,18,.38) 60%,#141613 100%)}.sun-haze{width:55%;left:48%;top:39%}}
+.sun-haze{top:17%;opacity:.45}
+.sun-haze:before{content:'';position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;background:#fff3d5;box-shadow:0 0 14px 5px #ffe3a9,0 0 40px 16px #ffbc6060;filter:blur(1px)}
+@media(max-width:600px){.sun-haze{top:35%}}

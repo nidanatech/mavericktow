@@ -25,6 +25,10 @@ Promise.all(truckImages.map(image => image.decode().catch(() => {}))).then(() =>
     drive.fromTo('.rig-boom', {rotation:12}, {
       rotation:-14, ease:'none', duration:1
     }, 0);
+    drive.to('.hero-atmosphere', {yPercent:-3, scale:1.04, ease:'none', duration:1}, 0);
+    const sunlight = gsap.to('.sun-haze', {
+      opacity:0.38, scale:1.08, duration:7, repeat:-1, yoyo:true, ease:'sine.inOut'
+    });
     drive.to('.scroll-progress', {scaleX:1, ease:'none', duration:1}, 0);
 
     const replay = () => arrival.restart();
@@ -34,7 +38,10 @@ Promise.all(truckImages.map(image => image.decode().catch(() => {}))).then(() =>
       gsap.from(element, {y:35,opacity:0,duration:0.8,
         scrollTrigger:{trigger:element,start:'top 90%',once:true}});
     });
-    return () => replayButton.removeEventListener('click', replay);
+    return () => {
+      sunlight.kill();
+      replayButton.removeEventListener('click', replay);
+    };
   });
   ScrollTrigger.refresh();
 });
