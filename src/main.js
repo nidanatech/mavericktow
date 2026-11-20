@@ -2,11 +2,28 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 const motion = gsap.matchMedia();
+const truckImage = document.querySelector('.truck img');
+truckImage.decode().catch(() => {}).then(() => {
 motion.add('(prefers-reduced-motion: no-preference)', () => {
-  gsap.from('.truck', {x:'-110%', opacity:0, duration:1.6, ease:'power3.out'});
-  gsap.from('.hero-copy', {y:24, opacity:0, duration:1});
-  gsap.to('.truck img', {rotation:-3, y:-25, transformOrigin:'75% 80%', scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
-  gsap.to('.sun', {y:90,scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
+  const arrival = gsap.timeline();
+  arrival.fromTo('.truck', {xPercent:-140, opacity:0}, {xPercent:0, opacity:1, duration:2.2, ease:'power3.out'})
+    .fromTo('.hero-copy', {y:35, opacity:0}, {y:0, opacity:1, duration:1}, 0.3);
+  const drive = gsap.timeline({scrollTrigger:{
+    trigger:'.hero', start:'top top', end:() => '+=' + window.innerHeight * 1.4,
+    pin:true, scrub:0.7, invalidateOnRefresh:true
+  }});
+  drive.to('.truck img', {rotation:-9, yPercent:-10, scale:1.06, transformOrigin:'20% 82%', ease:'none'},0)
+    .to('.sun', {y:100, scale:1.2, ease:'none'},0)
+    .to('.road', {backgroundPosition:'-600px 0',ease:'none'},0)
+    .to('.hero-copy', {y:-35,opacity:0.7,ease:'none'},0)
+    .to('.scroll-progress', {scaleX:1,ease:'none'},0);
+  document.querySelector('.replay').addEventListener('click', () => arrival.restart());
+  gsap.utils.toArray('.services article, .section-heading, .photo-section>div').forEach(element => {
+    gsap.from(element, {y:45,opacity:0,duration:0.8,scrollTrigger:{trigger:element,start:'top 90%',once:true}});
+  });
+  return () => arrival.kill();
+});
+ScrollTrigger.refresh();
 });
 document.querySelector('#year').textContent = new Date().getFullYear();
 document.querySelector('#partnership').addEventListener('submit', event => {
