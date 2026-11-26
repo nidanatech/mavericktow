@@ -22,9 +22,25 @@ Promise.all(truckImages.map(image => image.decode().catch(() => {}))).then(() =>
       end:() => '+=' + window.innerHeight,
       pin:true, scrub:0.6, invalidateOnRefresh:true
     }});
-    drive.fromTo('.rig-boom', {rotation:12}, {
-      rotation:-14, ease:'none', duration:1
-    }, 0);
+    // The ram's lower pin stays on the subframe; its upper pin follows the arm.
+    const lift = {angle:0};
+    const updateLift = () => {
+      const radians = lift.angle * Math.PI / 180;
+      const pivot = {x:54, y:410};
+      const upper = {
+        x:pivot.x + 276 * Math.cos(radians) + 135 * Math.sin(radians),
+        y:pivot.y + 276 * Math.sin(radians) - 135 * Math.cos(radians)
+      };
+      const dx = upper.x - 280;
+      const dy = upper.y - 460;
+      gsap.set('.boom-arm', {rotation:lift.angle});
+      gsap.set('.boom-hydraulic', {
+        width:Math.hypot(dx, dy) / 726 * 100 + '%',
+        rotation:Math.atan2(dy, dx) * 180 / Math.PI
+      });
+    };
+    updateLift();
+    drive.to(lift, {angle:-16, ease:'none', duration:1, onUpdate:updateLift}, 0);
     drive.to('.sun-haze', {y:-18, ease:'none', duration:1}, 0);
     const sunlight = gsap.to('.sun-haze', {
       opacity:0.9, scale:1.06, duration:7, repeat:-1, yoyo:true, ease:'sine.inOut'
